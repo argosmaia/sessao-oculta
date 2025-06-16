@@ -27,7 +27,7 @@ import lombok.Setter;
 public class AdminUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private Long id;
     private String login;
     private String senha;
 

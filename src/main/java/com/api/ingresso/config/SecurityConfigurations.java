@@ -13,14 +13,19 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 @EnableWebMvc
 public class SecurityConfigurations {
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-            .csrf(
-                csrf -> csrf.disable())
-            .sessionManagement(sm -> 
-                sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .build();
+        http
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> 
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/login", "/registrar", "/health").permitAll()
+                .anyRequest().authenticated()
+            );
+
+        return http.build();
     }
 
     @Bean
@@ -30,6 +35,6 @@ public class SecurityConfigurations {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(20);
+        return new BCryptPasswordEncoder(12); // mais equilibrado
     }
 }

@@ -73,9 +73,14 @@
 			<version>1.0.2</version>
 		</dependency>
 		<dependency>
-      		<groupId>org.flywaydb</groupId>
-      		<artifactId>flyway-core</artifactId>
-    	</dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -113,6 +118,17 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+
+			</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>10.20.1</version>
+				<configuration>
+					<url>jdbc:postgresql://localhost:9432/cinesquina</url>
+					<user>argosdgti</user>
+					<password>12345678</password>
 				</configuration>
 			</plugin>
 		</plugins>

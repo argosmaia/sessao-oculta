@@ -124,11 +124,14 @@
 			<plugin>
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
-				<version>10.20.1</version>
+				<version>11.7.2</version>
 				<configuration>
 					<url>jdbc:postgresql://localhost:9432/cinesquina</url>
 					<user>argosdgti</user>
 					<password>12345678</password>
+					<schemas>
+          				<schema>public</schema>
+        			</schemas>
 				</configuration>
 			</plugin>
 		</plugins>

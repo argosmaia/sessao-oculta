@@ -1,10 +1,9 @@
 package com.api.ingresso.dto.atualizar;
 
-import com.api.ingresso.domain.embeddable.Endereco;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDate;
 import java.util.UUID;
+
+import jakarta.validation.constraints.NotNull;
 
 public record AtualizarDadosFilmeDTO(
         @NotNull UUID id,

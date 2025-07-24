@@ -12,7 +12,7 @@ import com.api.ingresso.response.APIResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
-
+ 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

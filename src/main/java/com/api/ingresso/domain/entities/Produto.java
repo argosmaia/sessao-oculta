@@ -3,6 +3,7 @@
  */
 package com.api.ingresso.domain.entities;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import com.api.ingresso.domain.embeddable.Bebida;
@@ -24,8 +25,8 @@ import lombok.Setter;
 /**
  * 
  */
-@Entity(name = "Produto")
-@Table(name = "produtos")
+@Entity(name = "Item")
+@Table(name = "itens")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -40,4 +41,5 @@ public class Produto {
 	private Lanche lanche;
 	@Enumerated(EnumType.STRING)
 	private Bebida bebida;
+	private BigDecimal preco;
 }

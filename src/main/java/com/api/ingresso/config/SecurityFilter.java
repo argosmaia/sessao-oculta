@@ -42,9 +42,9 @@ public class SecurityFilter extends OncePerRequestFilter {
     private String recuperarToken(HttpServletRequest request) {
         var authorizationHeader = request.getHeader("Authorization");
         
-        if(authorizationHeader == null) {
-            throw new RuntimeException("Token não foi enviado no cabeçalho Authorization!");
+        if(authorizationHeader != null) {
+            return authorizationHeader.replace("Bearer", "");
         }
-        return authorizationHeader.replace("Bearer", "");
+        return null;
     }
 }

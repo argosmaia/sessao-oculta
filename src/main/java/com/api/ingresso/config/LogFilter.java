@@ -1,4 +1,4 @@
-package com.api.ingresso.controller;
+package com.api.ingresso.config;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

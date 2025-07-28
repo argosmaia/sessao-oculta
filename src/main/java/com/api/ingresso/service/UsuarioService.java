@@ -1,12 +1,13 @@
 package com.api.ingresso.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.api.ingresso.dto.UsuarioDTO;
 import com.api.ingresso.repository.UsuarioRepository;
 import com.api.ingresso.response.APIResponse;
-import com.api.ingresso.domain.entities.Usuario;
 
 @Service
 public class UsuarioService {
@@ -21,7 +22,11 @@ public class UsuarioService {
         return APIResponse.sucesso("Usuário encontrado -> ", new UsuarioDTO(usuario));
     }
 
-    public APIResponse<UsuarioDTO> salvar(Usuario usuario) {
-        return usuarios.save(usuario);
+    public APIResponse<UsuarioDTO> verificarSeExiste(UUID id) {
+        var usuario = usuarios
+                        .findById(id)
+                        .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+        
+        return APIResponse.sucesso("Usuário:\n", new UsuarioDTO(usuario));
     }
 }

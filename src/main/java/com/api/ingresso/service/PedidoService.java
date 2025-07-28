@@ -85,7 +85,7 @@ public class PedidoService {
 
         for(ItemEntradaDTO itemDTO : pedidoEntrada.itens()) {
             Produto produto = produtos.findById(itemDTO.produtoId())
-                .orElseThrow(() -> new Runtime("Produto não encontrado!"));
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
             
             Item item = new Item();
             item.setProduto(produto);

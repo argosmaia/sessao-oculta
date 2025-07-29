@@ -61,17 +61,17 @@ public class PedidoService {
     }
 
     @Transactional public APIResponse<CriarPedidoRespostaDTO> criarPedido(@Valid CriarPedidoEntradaDTO pedidoEntrada) {
-        Usuario usuario = usuarios.findById(pedidoEntrada.usuarioId())
-            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        // Usuario usuario = usuarios.findById(pedidoEntrada.usuarioId())
+        //     .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        Filme filme = filmes.findById(pedidoEntrada.filmeId())
-            .orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+        // Filme filme = filmes.findById(pedidoEntrada.filmeId())
+        //     .orElseThrow(() -> new RuntimeException("Filme não encontrado"));
 
-        Sala sala = salas.findById(pedidoEntrada.salaId())
-            .orElseThrow(() -> new RuntimeException("Sala não encontrada"));
+        // Sala sala = salas.findById(pedidoEntrada.salaId())
+        //     .orElseThrow(() -> new RuntimeException("Sala não encontrada"));
 
-        Sessao sessao = sessoes.findById(pedidoEntrada.sessaoId())
-            .orElseThrow(() -> new RuntimeException("Sessão não encontrada"));    
+        // Sessao sessao = sessoes.findById(pedidoEntrada.sessaoId())
+        //     .orElseThrow(() -> new RuntimeException("Sessão não encontrada"));    
     
         Pedido pedido = new Pedido();
         pedido.setUsuario(usuario);

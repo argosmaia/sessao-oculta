@@ -1,13 +1,23 @@
 package com.api.ingresso.dto;
 
-import java.math.BigDecimal;
+import java.util.UUID;
 
-import jakarta.validation.constraints.NotBlank;
+import com.api.ingresso.domain.entities.Item;
+import com.api.ingresso.domain.entities.Pedido;
+import com.api.ingresso.domain.entities.Produto;
+
 import jakarta.validation.constraints.NotNull;
 
 public record ItemRespostaDTO(
-    @NotBlank String nomeProduto,
-    @NotNull int quantidade,
-    @NotNull BigDecimal precoUnitario,
-    @NotNull BigDecimal precoTotal
-) {}
+    @NotNull UUID id,
+    @NotNull Pedido pedido,
+    @NotNull int quantidade
+) {
+    public ItemRespostaDTO(Item itens) {
+        this(
+            itens.getId(),
+            itens.getPedido(),
+            itens.getQuantidade()
+        );
+    }
+}

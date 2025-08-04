@@ -15,8 +15,8 @@ import jakarta.validation.constraints.NotNull;
  */
 public record ItemEntradaDTO(
     @NotNull UUID id,
-    @NotNull UUID produto,
-    @NotNull UUID pedido,
+    @NotNull UUID produtoId,
+    @NotNull UUID pedidoId,
     @NotNull int quantidade
 ) {
     public ItemEntradaDTO(Item itens) {

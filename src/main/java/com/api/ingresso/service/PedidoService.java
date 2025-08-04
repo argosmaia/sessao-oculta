@@ -64,10 +64,10 @@ public class PedidoService {
         Usuario usuario = usuarios.findById(pedidoEntrada.usuarioId())
             .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        Filme filme = filmes.findById(pedidoEntrada.filme())
+        Filme filme = filmes.findById(pedidoEntrada.filmeId())
             .orElseThrow(() -> new RuntimeException("Filme não encontrado"));
 
-        Sala sala = salas.findById(pedidoEntrada.sala())
+        Sala sala = salas.findById(pedidoEntrada.salaId())
             .orElseThrow(() -> new RuntimeException("Sala não encontrada"));
 
         Sessao sessao = sessoes.findById(pedidoEntrada.sessaoId())
@@ -107,31 +107,40 @@ public class PedidoService {
 
         return APIResponse.criado("Pedido criado com sucesso!", resposta);
     }
+
     public APIResponse<PedidoRespostaDTO> buscarPorId(UUID id) {
         Pedido pedido = pedidos.findById(id)
-            .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
         List<ItemRespostaDTO> itens = pedido.getItens().stream().map(item -> {
             Produto p = item.getProduto();
-            BigDecimal precoTotal = p.getPreco().multiply(BigDecimal.valueOf(item.getQuantidade()));
+            BigDecimal precoUnitario = p.getPreco();
+            BigDecimal precoTotal = precoUnitario.multiply(BigDecimal.valueOf(item.getQuantidade()));
+
             return new ItemRespostaDTO(
-                p.getNome(), item.getQuantidade(), p.getPreco(), precoTotal
+                    item.getId(),
+                    item.getPedido().getId(),
+                    p.getNome(),
+                    item.getQuantidade(),
+                    precoUnitario,
+                    precoTotal
             );
         }).collect(Collectors.toList());
 
         PedidoRespostaDTO dto = new PedidoRespostaDTO(
-            pedido.getId(),
-            pedido.getUsuario().getId(),
-            pedido.getFilme().getId(),
-            pedido.getSala().getId(),
-            pedido.getSessao().getId(),
-            pedido.getValor(),
-            pedido.getMetodoPagamento(),
-            itens
+                pedido.getId(),
+                pedido.getUsuario(),
+                pedido.getFilme(),
+                pedido.getSala(),
+                pedido.getSessao(),
+                pedido.getValor(),
+                pedido.getMetodoPagamento(),
+                itens
         );
 
         return APIResponse.sucesso("Pedido encontrado", dto);
     }
+
 
     public APIResponse<List<ListarPedidoRespostaDTO>> listarTodos() {
         List<ListarPedidoRespostaDTO> pedidosLista = pedidos.findAll().stream().map(pedido ->

@@ -39,7 +39,8 @@ public class FilmeController {
     public ResponseEntity<APIResponse<?>> cadastrarDadosFilme(@RequestBody @Valid CriarFilmeDTO dados, UriComponentsBuilder uriBuilder) {
         var filme = new Filme(dados);
         filmes.save(filme);
-        var uri = uriBuilder.path("/filme/{id}")
+        var uri = uriBuilder
+                .path("/filme/{id}")
                 .buildAndExpand(filme.getId())
                 .toUri();
 

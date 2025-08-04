@@ -10,13 +10,13 @@ import jakarta.validation.constraints.NotNull;
 
 public record ItemRespostaDTO(
     @NotNull UUID id,
-    @NotNull Pedido pedido,
+    @NotNull UUID pedido,
     @NotNull int quantidade
 ) {
     public ItemRespostaDTO(Item itens) {
         this(
             itens.getId(),
-            itens.getPedido(),
+            itens.getPedido().getId(),
             itens.getQuantidade()
         );
     }

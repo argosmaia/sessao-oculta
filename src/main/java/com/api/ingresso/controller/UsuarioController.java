@@ -64,9 +64,10 @@ public class UsuarioController {
 
 	@GetMapping
 	public ResponseEntity<APIResponse<Page<ListarUsuariosDTO>>> listarUsuarios(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
-		var paginas = usuarios.findAll(paginacao)
-							.map(ListarUsuariosDTO::new);
-
+		var paginas = usuarios
+					.findAll(paginacao)
+					.map(ListarUsuariosDTO::new);
+			
 		return ResponseEntity.ok(APIResponse
 				.sucesso("Lista de Usuários", paginas));
 	}

@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 
 import com.api.ingresso.domain.embeddable.MetodoPagamento;
 import com.api.ingresso.domain.entities.Filme;
+import com.api.ingresso.domain.entities.Pedido;
 import com.api.ingresso.domain.entities.Sala;
 import com.api.ingresso.domain.entities.Sessao;
 import com.api.ingresso.domain.entities.Usuario;
@@ -28,4 +29,5 @@ public record CriarPedidoEntradaDTO(
     @NotNull Sessao sessaoId,
     @NotNull MetodoPagamento metodoPagamento,
     @NotNull @Valid List<@Valid ItemEntradaDTO> itens
-) {}
+) {
+}

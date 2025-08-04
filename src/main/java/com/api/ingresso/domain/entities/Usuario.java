@@ -58,18 +58,6 @@ public class Usuario {
 		this.endereco = new Endereco(dados.endereco());
 	}
 
-//	public Usuario(UsuarioDTO dados) {
-//		this.id = dados.id();
-//		this.nome = dados.nome();
-//		this.idade = dados.idade();
-//		this.aniversario = dados.aniversario();
-//		this.cpf = dados.cpf();
-//		this.email = dados.email();
-//		this.senha = dados.senha();
-//		this.telefone = dados.telefone();
-//		this.endereco = dados.endereco();
-//	}
-	
 	/**
 	 * @return the id
 	 */

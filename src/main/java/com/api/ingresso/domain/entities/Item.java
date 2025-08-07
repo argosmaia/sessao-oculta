@@ -35,20 +35,18 @@ public class Item {
     private UUID id;
     @ManyToOne(optional = false)
     private Produto produto;
-    @ManyToOne(optional = false)
-    private Pedido pedido;
     private int quantidade;
 
-    public Item(ItemEntradaDTO itens) {
+    public Item(ItemEntradaDTO itens, Produto produto, Pedido pedido) {
         this.id = itens.id();
-        this.produto = itens.produto();
-        this.pedido = itens.pedido();
+        this.produto = produto;
         this.quantidade = itens.quantidade();
     }
 
-    public Item(ItemRespostaDTO itemSaida) { // Para a saída dos dados
+
+    public Item(ItemRespostaDTO itemSaida, Pedido pedido) { // Para a saída dos dados
         this.id = itemSaida.id();
-        this.pedido = itemSaida.pedido();
+        this.pedido = pedido;
         this.quantidade = itemSaida.quantidade();
     }
 }

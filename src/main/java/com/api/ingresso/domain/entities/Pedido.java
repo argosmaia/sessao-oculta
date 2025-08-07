@@ -7,9 +7,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.api.ingresso.domain.embeddable.MetodoPagamento;
 import com.api.ingresso.dto.atualizar.AtualizarPedidoEntradaDTO;
+import com.api.ingresso.dto.atualizar.AtualizarPedidoRespostaDTO;
 import com.api.ingresso.dto.criar.CriarPedidoEntradaDTO;
 import com.api.ingresso.dto.criar.CriarPedidoRespostaDTO;
 
@@ -20,6 +22,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -42,16 +45,10 @@ import lombok.Setter;
 public class Pedido {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @ManyToOne(optional = false)
-    private Usuario usuario;
+    @ManyToOne(optional = false) @JoinColumn(name = "ingresso_id")
+    private Ingresso ingresso;
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> itens = new ArrayList<>();
-    @ManyToOne(optional = false)
-    private Filme filme;
-    @ManyToOne(optional = false)
-    private Sala sala;
-    @ManyToOne(optional = false)
-    private Sessao sessao;
     private BigDecimal valor;
     @Enumerated(EnumType.STRING)
     private MetodoPagamento metodoPagamento;
@@ -65,14 +62,18 @@ public class Pedido {
          *  @NotNull MetodoPagamento metodoPagamento,
          *  @NotNull @Valid List<@Valid ItemEntradaDTO> itens
         */
-        this.usuario = pedidoEntrada.usuarioId();
-        this.filme = pedidoEntrada.filmeId();
-        this.sala = pedidoEntrada.salaId();
-        this.sessao = pedidoEntrada.sessaoId();
+        this.ingresso = pedidoEntrada.ingresso();
         this.metodoPagamento = pedidoEntrada.metodoPagamento();
-        this.itens = pedidoEntrada.itens().stream()
-                                    .map(itemDTO -> new Item(itemDTO)) // 'this' é o Pedido atual, implementar sem erro futuramente .map(itemDTO -> new Item(itemDTO, this))
-                                    .toList();
+        // this.itens = pedidoEntrada.itens().stream()
+        // .map(dto -> {
+        //     Produto produto = produtoRepository.findById(dto.produtoId()).orElseThrow(...);
+        //     Item item = new Item(dto, produto);
+        //     item.setPedido(this); // associa o pedido aqui
+        //     return item;
+        // })
+        // .collect(Collectors.toList());
+
+        this.itens.forEach(i -> i.setPedido(this));
     }
 
     /**
@@ -99,5 +100,10 @@ public class Pedido {
         this.valor = pedidoResposta.valor();
         this.metodoPagamento = pedidoResposta.metodoPagamento();       
     }
+
+    public void atualizarDadosSaida(AtualizarPedidoRespostaDTO dadosSaida) {
+        this.metodoPagamento = dadosSaida.metodoPagamento() != null ? dadosSaida.metodoPagamento() : this.metodoPagamento;
+    }
+
 
 }

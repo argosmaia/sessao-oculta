@@ -4,9 +4,9 @@
 package com.api.ingresso.dto.criar;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.api.ingresso.domain.embeddable.MetodoPagamento;
+import com.api.ingresso.domain.entities.Ingresso;
 import com.api.ingresso.dto.ItemEntradaDTO;
 
 import jakarta.validation.Valid;
@@ -22,10 +22,7 @@ public record CriarPedidoEntradaDTO(
     // @NotNull Sessao sessaoId,
     // @NotNull MetodoPagamento metodoPagamento,
     // @NotNull @Valid List<@Valid ItemEntradaDTO> itens
-    @NotNull UUID usuarioId,
-    @NotNull UUID filmeId,
-    @NotNull UUID salaId,
-    @NotNull UUID sessaoId,
+    @NotNull Ingresso ingresso,
     @NotNull MetodoPagamento metodoPagamento,
     @NotNull @Valid List<ItemEntradaDTO> itens
 ) {

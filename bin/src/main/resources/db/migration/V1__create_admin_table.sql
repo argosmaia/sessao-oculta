@@ -1,0 +1,5 @@
+CREATE TABLE admin_users (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    login VARCHAR(100),
+    senha VARCHAR(255)
+);

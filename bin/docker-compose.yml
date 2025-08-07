@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_cinesquina
+    environment:
+      POSTGRES_USER: argosdgti
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: cinesquina
+    ports:
+      - "9432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped #Pode usar always
+
+volumes:
+  pgdata:

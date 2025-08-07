@@ -5,9 +5,10 @@ package com.api.ingresso.domain.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.api.ingresso.domain.embeddable.MetodoPagamento;
 import com.api.ingresso.dto.atualizar.AtualizarPedidoEntradaDTO;
@@ -47,11 +48,14 @@ public class Pedido {
     private UUID id;
     @ManyToOne(optional = false) @JoinColumn(name = "ingresso_id")
     private Ingresso ingresso;
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "itens", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "item_id", nullable = false)
     private List<Item> itens = new ArrayList<>();
     private BigDecimal valor;
     @Enumerated(EnumType.STRING)
     private MetodoPagamento metodoPagamento;
+    private Map<UUID, Produto> produtosMap = new HashMap<>();
+
 
     public Pedido(CriarPedidoEntradaDTO pedidoEntrada) {
         /**
@@ -64,16 +68,15 @@ public class Pedido {
         */
         this.ingresso = pedidoEntrada.ingresso();
         this.metodoPagamento = pedidoEntrada.metodoPagamento();
-        // this.itens = pedidoEntrada.itens().stream()
-        // .map(dto -> {
-        //     Produto produto = produtoRepository.findById(dto.produtoId()).orElseThrow(...);
-        //     Item item = new Item(dto, produto);
-        //     item.setPedido(this); // associa o pedido aqui
-        //     return item;
-        // })
-        // .collect(Collectors.toList());
-
-        this.itens.forEach(i -> i.setPedido(this));
+        this.itens = pedidoEntrada.itens().stream()
+        .map(itemDTO -> {
+            Produto produto = produtosMap.get(itemDTO.produtoId());
+            if (produto == null) {
+                throw new IllegalArgumentException("Produto não encontrado: " + itemDTO.produtoId());
+            }
+            return new Item(itemDTO, produto);
+        })
+        .toList();
     }
 
     /**

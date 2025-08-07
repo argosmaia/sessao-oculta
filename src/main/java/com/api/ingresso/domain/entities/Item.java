@@ -12,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -34,19 +35,20 @@ public class Item {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @ManyToOne(optional = false)
+    @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
     private int quantidade;
 
-    public Item(ItemEntradaDTO itens, Produto produto, Pedido pedido) {
+    public Item(ItemEntradaDTO itens, Produto produto) {
         this.id = itens.id();
         this.produto = produto;
         this.quantidade = itens.quantidade();
     }
 
 
-    public Item(ItemRespostaDTO itemSaida, Pedido pedido) { // Para a saída dos dados
+    public Item(ItemRespostaDTO itemSaida) { // Para a saída dos dados
         this.id = itemSaida.id();
-        this.pedido = pedido;
+        this.produto = itemSaida.nomeProduto();
         this.quantidade = itemSaida.quantidade();
     }
 }

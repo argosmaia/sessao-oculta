@@ -23,12 +23,9 @@ import com.api.ingresso.dto.atualizar.AtualizarPedidoRespostaDTO;
 import com.api.ingresso.dto.criar.CriarPedidoEntradaDTO;
 import com.api.ingresso.dto.criar.CriarPedidoRespostaDTO;
 import com.api.ingresso.dto.listar.ListarPedidoRespostaDTO;
-import com.api.ingresso.repository.FilmeRepository;
+import com.api.ingresso.repository.ItemRepository;
 import com.api.ingresso.repository.PedidoRepository;
 import com.api.ingresso.repository.ProdutoRepository;
-import com.api.ingresso.repository.SalaRepository;
-import com.api.ingresso.repository.SessaoRepository;
-import com.api.ingresso.repository.UsuarioRepository;
 import com.api.ingresso.response.APIResponse;
 
 import jakarta.transaction.Transactional;
@@ -39,39 +36,19 @@ import jakarta.validation.constraints.NotNull;
 public class PedidoService {
     private final PedidoRepository pedidos;
     private final ProdutoRepository produtos;
-    private final UsuarioRepository usuarios;
-    private final FilmeRepository filmes;
-    private final SalaRepository salas;
-    private final SessaoRepository sessoes;
+    private final ItemRepository itens;
 
     public PedidoService(
         PedidoRepository pedidos,
         ProdutoRepository produtos,
-        UsuarioRepository usuarios,
-        FilmeRepository filmes,
-        SalaRepository salas,
-        SessaoRepository sessoes
+        ItemRepository itens
     ) {
         this.pedidos = pedidos;
         this.produtos = produtos;
-        this.usuarios = usuarios;
-        this.filmes = filmes;
-        this.salas = salas;
-        this.sessoes = sessoes;
+        this.itens = itens;
     }
 
     @Transactional public APIResponse<CriarPedidoRespostaDTO> criarPedido(@Valid CriarPedidoEntradaDTO pedidoEntrada) {
-        Usuario usuario = usuarios.findById(pedidoEntrada.usuarioId())
-            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
-        Filme filme = filmes.findById(pedidoEntrada.filmeId())
-            .orElseThrow(() -> new RuntimeException("Filme não encontrado"));
-
-        Sala sala = salas.findById(pedidoEntrada.salaId())
-            .orElseThrow(() -> new RuntimeException("Sala não encontrada"));
-
-        Sessao sessao = sessoes.findById(pedidoEntrada.sessaoId())
-            .orElseThrow(() -> new RuntimeException("Sessão não encontrada"));    
     
         Pedido pedido = new Pedido();
         pedido.setUsuario(usuario);

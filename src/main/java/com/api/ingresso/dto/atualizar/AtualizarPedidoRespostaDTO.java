@@ -8,11 +8,13 @@ import java.util.UUID;
 
 import com.api.ingresso.domain.embeddable.MetodoPagamento;
 
+import jakarta.validation.constraints.NotNull;
+
 /**
  * 
  */
 public record AtualizarPedidoRespostaDTO(
-    UUID id,
-    BigDecimal valor,
-    MetodoPagamento metodoPagamento
+    @NotNull UUID id,
+    @NotNull BigDecimal valor,
+    @NotNull MetodoPagamento metodoPagamento
 ) {}

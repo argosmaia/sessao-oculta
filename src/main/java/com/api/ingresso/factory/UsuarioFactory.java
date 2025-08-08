@@ -2,7 +2,6 @@ package com.api.ingresso.factory;
 
 import java.time.LocalDate;
 import java.util.Locale;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Component;
 

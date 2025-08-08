@@ -5,8 +5,6 @@ package com.api.ingresso.dto;
 
 import java.time.LocalDate;
 import java.util.UUID;
-
-import com.api.ingresso.domain.embeddable.Endereco;
 import com.api.ingresso.domain.entities.Usuario;
 
 /**

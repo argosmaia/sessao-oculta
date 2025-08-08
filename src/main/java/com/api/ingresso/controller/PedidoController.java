@@ -25,6 +25,7 @@ import com.api.ingresso.dto.listar.ListarPedidoEntradaDTO;
 import com.api.ingresso.dto.listar.ListarPedidoRespostaDTO;
 import com.api.ingresso.repository.PedidoRepository;
 import com.api.ingresso.response.APIResponse;
+import com.api.ingresso.service.PedidoService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -35,19 +36,20 @@ import jakarta.validation.Valid;
 public class PedidoController {
 
     private final PedidoRepository pedidos;
+	private final PedidoService pedidoService;
 
-    public PedidoController(PedidoRepository pedidos) {
+    public PedidoController(PedidoRepository pedidos, PedidoService pedidoService) {
         this.pedidos = pedidos;
+		this.pedidoService = pedidoService;
     }
 
 	// DADOS DE ENTRADA
-
     // Criar pedido
     @PostMapping
     @Transactional
     public ResponseEntity<APIResponse<?>> cadastrarPedido(@RequestBody @Valid CriarPedidoEntradaDTO dados, UriComponentsBuilder uriBuilder) {
 
-		var novoPedido = new Pedido(dados);
+		var novoPedido = pedidoService.criarPedido(dados);
 
 		pedidos.save(novoPedido);
 

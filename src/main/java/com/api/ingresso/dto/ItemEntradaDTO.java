@@ -1,4 +1,5 @@
 package com.api.ingresso.dto;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import com.api.ingresso.domain.entities.Item;
@@ -14,13 +15,15 @@ import jakarta.validation.constraints.NotNull;
 public record ItemEntradaDTO(
     @NotNull UUID id,
     @NotNull UUID produtoId,
-    @NotNull int quantidade
+    @NotNull int quantidade,
+    @NotNull BigDecimal preco
 ) {
     public ItemEntradaDTO(Item itens) {
         this(
             itens.getId(),
             itens.getProduto().getId(),
-            itens.getQuantidade()
+            itens.getQuantidade(),
+            itens.getProduto().getPreco()
         );
     }
 }

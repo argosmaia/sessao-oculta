@@ -7,5 +7,10 @@ package com.api.ingresso.domain.embeddable;
  * 
  */
 public enum Lanche {
-	PIPOCA, PIPOCA_DOCE, PAO_DE_QUEIJO
+	PIPOCA, 
+	PIPOCA_DOCE, 
+	PAO_DE_QUEIJO,
+	TWIX,
+	NACHO,
+	BATATA_FRITAS
 }

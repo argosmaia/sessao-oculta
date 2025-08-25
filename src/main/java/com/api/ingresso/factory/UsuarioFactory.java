@@ -16,7 +16,7 @@ import com.github.javafaker.Faker;
 @Component
 public class UsuarioFactory {
 
-    private final Faker faker = new Faker(new Locale("pt-BR"));
+    private final Faker faker = new Faker(Locale.forLanguageTag("pt-BR"));
 
     public CriarUsuarioDTO criarUsuarioDTOAleatorio() {
         String[] nomeSeparado = NomeValido.gerarNomeESobrenomeSeparados();

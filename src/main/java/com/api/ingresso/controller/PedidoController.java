@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import com.api.ingresso.domain.entities.Pedido;
 import com.api.ingresso.dto.PedidoEntradaDTO;
 import com.api.ingresso.dto.atualizar.AtualizarPedidoEntradaDTO;
 import com.api.ingresso.dto.criar.CriarPedidoEntradaDTO;

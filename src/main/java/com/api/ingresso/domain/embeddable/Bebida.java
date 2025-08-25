@@ -7,5 +7,11 @@ package com.api.ingresso.domain.embeddable;
  * 
  */
 public enum Bebida {
-	COCACOLA, PEPSI, GUARAVITA, GUARANA
+	COCA_COLA, 
+	PEPSI, 
+	GUARAVITA, 
+	GUARANA, 
+	MONSTER, 
+	GRAPETTE, 
+	ICE_TEA
 }

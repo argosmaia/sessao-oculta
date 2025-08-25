@@ -4,7 +4,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.api.ingresso.domain.entities.Pedido;
+import com.api.ingresso.domain.entities.Assento;
 
-public interface PedidoRepository extends JpaRepository<Pedido, UUID>{
+public interface AssentoRepository extends JpaRepository<Assento, UUID> {
+    
 }

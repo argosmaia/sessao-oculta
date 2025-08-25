@@ -107,6 +107,4 @@ public class Pedido {
     public void atualizarDadosSaida(AtualizarPedidoRespostaDTO dadosSaida) {
         this.metodoPagamento = dadosSaida.metodoPagamento() != null ? dadosSaida.metodoPagamento() : this.metodoPagamento;
     }
-
-
 }

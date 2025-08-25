@@ -6,7 +6,7 @@ import com.github.javafaker.Faker;
 
 public class NomeValido {
 
-    private static final Faker faker = new Faker(new Locale("pt-BR"));
+    private static final Faker faker = new Faker(Locale.forLanguageTag("pt-BR"));
 
     public static String gerarNomeCompleto() {
         String nome = faker.name().firstName();

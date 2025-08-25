@@ -9,16 +9,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.api.ingresso.domain.embeddable.MetodoPagamento;
+import com.api.ingresso.domain.entities.Item;
 import com.api.ingresso.domain.entities.Pedido;
-import com.api.ingresso.domain.entities.Produto;
 import com.api.ingresso.dto.ItemEntradaDTO;
 import com.api.ingresso.dto.atualizar.AtualizarPedidoEntradaDTO;
 import com.api.ingresso.dto.criar.CriarPedidoEntradaDTO;
 import com.api.ingresso.dto.listar.ListarPedidoEntradaDTO;
 import com.api.ingresso.dto.listar.ListarPedidoRespostaDTO;
-import com.api.ingresso.repository.ItemRepository;
+// import com.api.ingresso.repository.ItemRepository;
 import com.api.ingresso.repository.PedidoRepository;
-import com.api.ingresso.repository.ProdutoRepository;
+// import com.api.ingresso.repository.ProdutoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -28,13 +28,16 @@ import jakarta.validation.Valid;
 public class PedidoService {
 
     private final PedidoRepository pedidos;
-    private final ItemRepository itens;
-    private final ProdutoRepository produtos;
+    // private final ItemRepository itens;
+    // private final ProdutoRepository produtos;
 
-    public PedidoService(PedidoRepository pedidos, ItemRepository itens, ProdutoRepository produtos) {
+    public PedidoService(PedidoRepository pedidos //,
+        //ItemRepository itens, 
+        //ProdutoRepository produtos
+    ) {
         this.pedidos = pedidos;
-        this.itens = itens;
-        this.produtos = produtos;
+        // this.itens = itens;
+        // this.produtos = produtos;
     }
 
     // HELPERS ADIONAIS QUE IRÃO PARA A PACKAGE VALIDATIONS FUTURAMENTE
@@ -48,9 +51,42 @@ public class PedidoService {
     }
 
     private void validarMetodoPagamento(MetodoPagamento metodo) {
+        if (metodo == null) {
+            throw new IllegalArgumentException("Método de pagamento não pode ser nulo.");
+        }
+
+        switch (metodo) {
+            case CREDITO:
+            case DEBITO:
+            case PIX:
+            case DINHEIRO:
+                // Métodos suportados, então não faz nada especial
+                break;
+            default:
+                throw new IllegalArgumentException("Método de pagamento inválido: " + metodo);
+        }
+    }
+    
+    private void calcularValorTotal(Pedido pedido) {
+        if (pedido.getItens() == null || pedido.getItens().isEmpty()) {
+            pedido.setValor(BigDecimal.ZERO);
+            return;
+        }
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Item item : pedido.getItens()) {
+            if (item.getProduto() != null && item.getProduto().getPreco() != null) {
+                BigDecimal subtotal = item.getProduto().getPreco()
+                                        .multiply(BigDecimal.valueOf(item.getQuantidade()));
+                total = total.add(subtotal);
+            }
+        }
+
+        pedido.setValor(total);
     }
 
-    private void calcularValorTotal(Pedido pedido) {}
+
     // ------------------------------------------------------------------
 
     @Transactional

@@ -11,7 +11,7 @@ import com.github.javafaker.Faker;
 @Component
 public class EnderecoFactory {
 
-    private final Faker faker = new Faker(new Locale("pt-BR"));
+   private final Faker faker = new Faker(Locale.forLanguageTag("pt-BR"));
 
     public EnderecoDTO criarEnderecoDTOAleatorio() {
         return new EnderecoDTO(

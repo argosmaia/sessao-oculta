@@ -1,29 +1,23 @@
 package com.api.ingresso.service;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import com.api.ingresso.domain.embeddable.MetodoPagamento;
-import com.api.ingresso.domain.entities.Item;
 import com.api.ingresso.domain.entities.Pedido;
-import com.api.ingresso.dto.ItemEntradaDTO;
 import com.api.ingresso.dto.atualizar.AtualizarPedidoEntradaDTO;
 import com.api.ingresso.dto.criar.CriarPedidoEntradaDTO;
 import com.api.ingresso.dto.listar.ListarPedidoEntradaDTO;
 import com.api.ingresso.dto.listar.ListarPedidoRespostaDTO;
 // import com.api.ingresso.repository.ItemRepository;
 import com.api.ingresso.repository.PedidoRepository;
+import com.api.ingresso.validations.CalculoPedidoValidator;
 // import com.api.ingresso.repository.ProdutoRepository;
+import com.api.ingresso.validations.ItemValidator;
+import com.api.ingresso.validations.PagamentoValidator;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-
 @Service
 public class PedidoService {
 
@@ -39,63 +33,38 @@ public class PedidoService {
         // this.itens = itens;
         // this.produtos = produtos;
     }
-
-    // HELPERS ADIONAIS QUE IRÃO PARA A PACKAGE VALIDATIONS FUTURAMENTE
-    // -----------------------------------------------------------------
-    private void validarItens(@Valid List<ItemEntradaDTO> item) {
-        if (item == null || item.isEmpty()) throw new IllegalArgumentException("Lista de itens vazia");
-        for (ItemEntradaDTO itemDTO : item) {
-            if (itemDTO.quantidade() < 1) throw new IllegalArgumentException("Quantidade do item não pode ser zero ou negativa.");
-            if (itemDTO == null || itemDTO.preco().compareTo(BigDecimal.ONE) < 0) throw new IllegalArgumentException("Preço precisa ter um vallor de pelo menos R$ 1.");
-        }
-    }
-
-    private void validarMetodoPagamento(MetodoPagamento metodo) {
-        if (metodo == null) {
-            throw new IllegalArgumentException("Método de pagamento não pode ser nulo.");
-        }
-
-        switch (metodo) {
-            case CREDITO:
-            case DEBITO:
-            case PIX:
-            case DINHEIRO:
-                // Métodos suportados, então não faz nada especial
-                break;
-            default:
-                throw new IllegalArgumentException("Método de pagamento inválido: " + metodo);
-        }
-    }
     
-    private void calcularValorTotal(Pedido pedido) {
-        if (pedido.getItens() == null || pedido.getItens().isEmpty()) {
-            pedido.setValor(BigDecimal.ZERO);
-            return;
-        }
+    // private void calcularValorTotal(Pedido pedido) {
+    //     if (pedido.getItens() == null || pedido.getItens().isEmpty()) {
+    //         pedido.setValor(BigDecimal.ZERO);
+    //         return;
+    //     }
 
-        BigDecimal total = BigDecimal.ZERO;
+    //     BigDecimal total = BigDecimal.ZERO;
 
-        for (Item item : pedido.getItens()) {
-            if (item.getProduto() != null && item.getProduto().getPreco() != null) {
-                BigDecimal subtotal = item.getProduto().getPreco()
-                                        .multiply(BigDecimal.valueOf(item.getQuantidade()));
-                total = total.add(subtotal);
-            }
-        }
+    //     for (Item item : pedido.getItens()) {
+    //         if (item.getProduto() != null && item.getProduto().getPreco() != null) {
+    //             BigDecimal subtotal = item.getProduto().getPreco()
+    //                                     .multiply(BigDecimal.valueOf(item.getQuantidade()));
+    //             total = total.add(subtotal);
+    //         }
+    //     }
 
-        pedido.setValor(total);
-    }
+    //     pedido.setValor(total);
+    // }
 
 
     // ------------------------------------------------------------------
 
     @Transactional
     public Pedido criarPedido(CriarPedidoEntradaDTO dados) {
-        validarItens(dados.itens());
-        validarMetodoPagamento(dados.metodoPagamento());
-
+        // validarItens(dados.itens());
+        // validarMetodoPagamento(dados.metodoPagamento());
+        ItemValidator.validarItens(dados.itens());
+        PagamentoValidator.validarMetodoPagamento(dados.metodoPagamento());
+        
         Pedido pedido = new Pedido(dados);
-        calcularValorTotal(pedido);
+        CalculoPedidoValidator.calcularValorTotal(pedido);
         pedidos.save(pedido);
 
         return pedido;
@@ -117,7 +86,7 @@ public class PedidoService {
          * }
          */
         pedido.atualizarDadosEntrada(dados);
-        calcularValorTotal(pedido);
+        CalculoPedidoValidator.calcularValorTotal(pedido);
         pedidos.save(pedido);
         return pedido;
     }

@@ -11,7 +11,9 @@ import com.api.ingresso.response.APIResponse;
 
 @Service
 public class UsuarioService {
-    @Autowired private UsuarioRepository usuarios;
+    private final UsuarioRepository usuarios;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenService tokenService;
 
     public APIResponse<UsuarioDTO> buscar(String nome) {
         var usuario = usuarios

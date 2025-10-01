@@ -48,8 +48,7 @@ public class Pedido {
     private UUID id;
     @ManyToOne(optional = false) @JoinColumn(name = "ingresso_id")
     private Ingresso ingresso;
-    @OneToMany(mappedBy = "itens", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "item_id", nullable = false)
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> itens = new ArrayList<>();
     private BigDecimal valor;
     @Enumerated(EnumType.STRING)
@@ -69,13 +68,13 @@ public class Pedido {
         this.ingresso = pedidoEntrada.ingresso();
         this.metodoPagamento = pedidoEntrada.metodoPagamento();
         this.itens = pedidoEntrada.itens().stream()
-        .map(itemDTO -> {
-            Produto produto = produtosMap.get(itemDTO.produtoId());
-            if (produto == null) {
-                throw new IllegalArgumentException("Produto não encontrado: " + itemDTO.produtoId());
-            }
-            return new Item(itemDTO, produto);
-        })
+            .map(itemDTO -> {
+                Produto produto = produtosMap.get(itemDTO.produtoId());
+                if (produto == null) {
+                    throw new IllegalArgumentException("Produto não encontrado: " + itemDTO.produtoId());
+                }
+                return new Item(itemDTO, produto, this); // <-- passa o Pedido aqui
+            })
         .toList();
     }
 

@@ -37,18 +37,22 @@ public class Item {
     @ManyToOne(optional = false)
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "pedido_id", nullable = false)
+    private Pedido pedido;
     private int quantidade;
 
-    public Item(ItemEntradaDTO itens, Produto produto) {
+    public Item(ItemEntradaDTO itens, Produto produto, Pedido pedido) {
         this.id = itens.id();
         this.produto = produto;
+        this.pedido = pedido;
         this.quantidade = itens.quantidade();
     }
 
-
-    public Item(ItemRespostaDTO itemSaida) { // Para a saída dos dados
+    public Item(ItemRespostaDTO itemSaida, Produto produto, Pedido pedido) {
         this.id = itemSaida.id();
-        this.produto = itemSaida.nomeProduto();
+        this.produto = produto;
+        this.pedido = pedido;
         this.quantidade = itemSaida.quantidade();
     }
 }

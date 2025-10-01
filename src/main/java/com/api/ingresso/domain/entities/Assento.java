@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.api.ingresso.dto.AssentoDTO;
 import com.api.ingresso.dto.atualizar.AtualizarAssentoDTO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -60,8 +61,8 @@ public class Assento {
          * @NotNull Sala sala
         */
         this.codigo = dados.codigo() != null ? dados.codigo() : this.codigo;
-        this.usuario = dados.usuario() != null ? dados.usuario() : this.usuario;
-        this.sessao = dados.sessao() != null ? dados.sessao() : this.sessao;
-        this.sala = dados.sala() != null ? dados.sala() : this.sala;	
+        // this.usuario = dados.usuario() != null ? dados.usuario() : this.usuario;
+        // this.sessao = dados.sessao() != null ? dados.sessao() : this.sessao;
+        // this.sala = dados.sala() != null ? dados.sala() : this.sala;	
     }
 }

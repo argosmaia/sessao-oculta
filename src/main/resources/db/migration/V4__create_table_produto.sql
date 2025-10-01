@@ -1,8 +1,11 @@
-    create table produtos (
-        id uuid not null,
-        bebida varchar(255) check (bebida in ('COCACOLA','PEPSI','GUARAVITA','GUARANA')),
-        descricao varchar(255),
-        lanche varchar(255) check (lanche in ('PIPOCA','PIPOCA_DOCE','PAO_DE_QUEIJO')),
-        nome varchar(255),
-        primary key (id)
-    )
+CREATE EXTENSION IF NOT EXISTS pg_uuidv7;
+
+CREATE TABLE produtos (
+    id uuid PRIMARY KEY DEFAULT uuidv7(),
+    nome        text NOT NULL,
+    descricao   text,
+    lanche      text CHECK (lanche IN ('PIPOCA','PIPOCA_DOCE','PAO_DE_QUEIJO','TWIX','NACHO','BATATA_FRITAS')),
+    bebida      text CHECK (bebida IN ('COCA_COLA','PEPSI','GUARAVITA','GUARANA','MONSTER','GRAPETTE','ICE_TEA')),
+    preco       numeric(10,2) NOT NULL
+);
+

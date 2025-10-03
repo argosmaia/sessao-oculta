@@ -1,7 +1,6 @@
 package com.api.ingresso.dto.criar;
 
 import java.time.LocalDateTime;
-
 import com.api.ingresso.domain.entities.Filme;
 import com.api.ingresso.domain.entities.Sala;
 import com.api.ingresso.domain.entities.Sessao;

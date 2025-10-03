@@ -57,6 +57,170 @@ public class Usuario {
 		this.telefone = dados.telefone();
 		this.endereco = new Endereco(dados.endereco());
 	}
+	
+	
+
+	/**
+	 * @return the id
+	 */
+	public UUID getId() {
+		return id;
+	}
+
+
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(UUID id) {
+		this.id = id;
+	}
+
+
+
+	/**
+	 * @return the nome
+	 */
+	public String getNome() {
+		return nome;
+	}
+
+
+
+	/**
+	 * @param nome the nome to set
+	 */
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+
+
+	/**
+	 * @return the idade
+	 */
+	public int getIdade() {
+		return idade;
+	}
+
+
+
+	/**
+	 * @param idade the idade to set
+	 */
+	public void setIdade(int idade) {
+		this.idade = idade;
+	}
+
+
+
+	/**
+	 * @return the aniversario
+	 */
+	public LocalDate getAniversario() {
+		return aniversario;
+	}
+
+
+
+	/**
+	 * @param aniversario the aniversario to set
+	 */
+	public void setAniversario(LocalDate aniversario) {
+		this.aniversario = aniversario;
+	}
+
+
+
+	/**
+	 * @return the cpf
+	 */
+	public String getCpf() {
+		return cpf;
+	}
+
+
+
+	/**
+	 * @param cpf the cpf to set
+	 */
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
+
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
+
+	/**
+	 * @return the senha
+	 */
+	public String getSenha() {
+		return senha;
+	}
+
+
+
+	/**
+	 * @param senha the senha to set
+	 */
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+
+
+	/**
+	 * @return the telefone
+	 */
+	public String getTelefone() {
+		return telefone;
+	}
+
+
+
+	/**
+	 * @param telefone the telefone to set
+	 */
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+
+
+	/**
+	 * @return the endereco
+	 */
+	public Endereco getEndereco() {
+		return endereco;
+	}
+
+
+
+	/**
+	 * @param endereco the endereco to set
+	 */
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
+	}
+
+
 
 	public void atualizarDados(AtualizarDadosUsuarioDTO dados) {
 		this.nome = dados.nome() != null ? dados.nome() : this.nome; // Se nome for nulo, mantém o atual
@@ -65,5 +229,4 @@ public class Usuario {
             this.endereco.atualizarEndereco(dados.endereco());
         }
 	}
-	
 }

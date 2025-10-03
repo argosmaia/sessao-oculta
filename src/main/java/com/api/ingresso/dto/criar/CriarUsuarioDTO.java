@@ -26,5 +26,4 @@ public record CriarUsuarioDTO(
 		@NotBlank @Size(min = 12, max = 13) String telefone,
 		@NotNull @Valid EnderecoDTO endereco
 	) {
-
 }

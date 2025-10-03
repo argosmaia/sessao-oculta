@@ -5,7 +5,6 @@ package com.api.ingresso.controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,17 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.api.ingresso.domain.entities.Usuario;
 import com.api.ingresso.dto.UsuarioDTO;
 import com.api.ingresso.dto.atualizar.AtualizarDadosUsuarioDTO;
 import com.api.ingresso.dto.criar.CriarUsuarioDTO;
 import com.api.ingresso.dto.listar.ListarUsuariosDTO;
-import com.api.ingresso.repository.UsuarioRepository;
 import com.api.ingresso.response.APIResponse;
 import com.api.ingresso.service.UsuarioService;
-
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 /**
@@ -41,80 +35,49 @@ import jakarta.validation.Valid;
 @RequestMapping("/usuario")
 public class UsuarioController {
 
-	@Autowired private UsuarioRepository usuarios;
-	@Autowired private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
-	@PostMapping @Transactional
-	public ResponseEntity<APIResponse<?>> cadastrarUsuario(@RequestBody @Valid CriarUsuarioDTO dados, UriComponentsBuilder uriBuilder) {
+    @PostMapping
+    public ResponseEntity<APIResponse<UsuarioDTO>> cadastrarUsuario(
+            @RequestBody @Valid CriarUsuarioDTO dados,
+            UriComponentsBuilder uriBuilder
+    ) {
+        var resposta = usuarioService.cadastrarUsuario(dados);
 
-		var usuario = new Usuario(dados);
+        var uri = uriBuilder.path("/usuarios/{id}")
+                .buildAndExpand(resposta.getDados().id())
+                .toUri();
 
-		usuarios.save(usuario);
+        return ResponseEntity.created(uri).body(resposta);
+    }
 
-		var uri = uriBuilder.path("/usuario/{id}")
-				.buildAndExpand(usuario.getId())
-				.toUri();
+    @GetMapping
+    public ResponseEntity<APIResponse<Page<ListarUsuariosDTO>>> listarUsuarios(
+            @PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
+        return ResponseEntity.ok(usuarioService.listarUsuarios(paginacao));
+    }
 
-		return ResponseEntity
-				.created(uri)
-				.body(APIResponse
-						.criado("Usuário criado", new UsuarioDTO(usuario)));
-	}
+    @GetMapping("/buscar")
+    public ResponseEntity<APIResponse<UsuarioDTO>> buscarPorNome(@RequestParam String nome) {
+        return ResponseEntity.ok(usuarioService.buscar(nome));
+    }
 
-	@GetMapping
-	public ResponseEntity<APIResponse<Page<ListarUsuariosDTO>>> listarUsuarios(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
-		var paginas = usuarios
-					.findAll(paginacao)
-					.map(ListarUsuariosDTO::new);
-			
-		return ResponseEntity.ok(APIResponse
-				.sucesso("Lista de Usuários", paginas));
-	}
+    @PutMapping
+    public ResponseEntity<APIResponse<UsuarioDTO>> atualizarUsuario(
+            @RequestBody @Valid AtualizarDadosUsuarioDTO dados) {
+        return ResponseEntity.ok(usuarioService.atualizarUsuario(dados));
+    }
 
-	// Listar por nomes
-	@GetMapping("/buscar/{id}")
-	public ResponseEntity<APIResponse<UsuarioDTO>> buscarPorNome(@RequestParam String nome) {
-		return ResponseEntity.ok(usuarioService.buscar(nome));
-	}
-
-
-	@PutMapping @Transactional
-	public ResponseEntity<?> atualizarInformacoes(@RequestBody @Valid AtualizarDadosUsuarioDTO dados) {
-		try {
-			var usuario = usuarios.getReferenceById(dados.id());
-			usuario.atualizarDados(dados);
-			return ResponseEntity.ok(
-					APIResponse
-							.sucesso(
-									"Dados do usuário foram atualizados com sucesso",
-									new UsuarioDTO(usuario)
-							)
-					);
-		} catch (EntityNotFoundException erro) {
-			return ResponseEntity.status(404)
-					.body(APIResponse
-							.erro(404, erro.getMessage())
-					);
-		}
-	}
-
-	@DeleteMapping("/{id}")
-	@Transactional
-	public ResponseEntity<APIResponse<?>> excluir(@PathVariable UUID id) {
-		if (!usuarios.existsById(id)) { // Verifica se o ID existe no banco
-			return ResponseEntity
-					.status(404) // Retorna 404 caso não encontre
-					.body(APIResponse
-							.erro(404, "Usuário não foi encontrado"));
-		}
-
-		usuarios.deleteById(id); // Deleta o usuario
-
-		return ResponseEntity
-				.status(204) // Retorna 204 se a exclusão foi bem-sucedida
-				.body(APIResponse
-						.semConteudo("O usuário e seus dados foram removido com sucesso")
-				);
-	}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<APIResponse<?>> excluir(@PathVariable UUID id) {
+        var resposta = usuarioService.excluir(id);
+        if (resposta.getStatus() == 404) {
+            return ResponseEntity.status(404).body(resposta);
+        }
+        return ResponseEntity.status(204).body(resposta);
+    }
 }

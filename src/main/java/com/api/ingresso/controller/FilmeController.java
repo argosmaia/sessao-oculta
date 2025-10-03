@@ -2,7 +2,6 @@ package com.api.ingresso.controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -17,90 +16,62 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.api.ingresso.domain.entities.Filme;
 import com.api.ingresso.dto.FilmeDTO;
 import com.api.ingresso.dto.atualizar.AtualizarDadosFilmeDTO;
 import com.api.ingresso.dto.criar.CriarFilmeDTO;
 import com.api.ingresso.dto.listar.ListarFilmesDTO;
-import com.api.ingresso.repository.FilmeRepository;
 import com.api.ingresso.response.APIResponse;
+import com.api.ingresso.service.FilmeService;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/filmes")
 public class FilmeController {
 
-    @Autowired FilmeRepository filmes;
+	private final FilmeService filmeService;
 
-    @PostMapping @Transactional
-    public ResponseEntity<APIResponse<?>> cadastrarDadosFilme(@RequestBody @Valid CriarFilmeDTO dados, UriComponentsBuilder uriBuilder) {
-        var filme = new Filme(dados);
-        filmes.save(filme);
-        var uri = uriBuilder
-                .path("/filme/{id}")
-                .buildAndExpand(filme.getId())
-                .toUri();
+	public FilmeController(FilmeService filmeService) {
+		this.filmeService = filmeService;
+	}
 
-        return ResponseEntity
-                .created(uri)
-                .body(APIResponse
-                        .criado("Informação sobre o filme foi criado com sucesso", new Filme(dados)
-                )
-        );
-    }
+    @PostMapping
+	public ResponseEntity<APIResponse<FilmeDTO>> cadastrarFilme(
+	    @RequestBody @Valid CriarFilmeDTO dados,
+	    UriComponentsBuilder uriBuilder
+	) {
 
+	    var resposta = filmeService.cadastrarFilme(dados);
+
+	    var uri = uriBuilder.path("/usuario/{id}")
+	            .buildAndExpand(resposta.getDados().id())
+	            .toUri();
+
+	    return ResponseEntity
+					.created(uri)
+					.body(resposta);
+	}
     @GetMapping
-    public ResponseEntity<APIResponse<Page<ListarFilmesDTO>>> listarFilmes(@PageableDefault(size = 10, sort = {"nome"})Pageable paginacao) {
-        var paginas = filmes
-                .findAll(paginacao)
-                .map(ListarFilmesDTO::new);
-
+    public ResponseEntity<APIResponse<Page<ListarFilmesDTO>>> listarFilmes(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
         return ResponseEntity
-                .ok(APIResponse
-                                .sucesso("Lista dos filmes: ", paginas)
-                        //.sucesso("Dados do filme foi atualizado com sucesso", new FilmeDTO())
-                );
+			.ok(filmeService
+				.listarFilmes(paginacao));
     }
 
-    @PutMapping @Transactional
-    public ResponseEntity<?> atualizarInformacoes(@RequestBody @Valid AtualizarDadosFilmeDTO dados) {
-        try {
-            var filme = filmes.getReferenceById(dados.id());
-            filme.atualizarDados(dados);
-            return ResponseEntity.ok(
-                    APIResponse
-                            .sucesso(
-                                    "Dados do usuário foram atualizados com sucesso",
-                                    new FilmeDTO(filme)
-                            )
-            );
-        } catch (EntityNotFoundException erro) {
-            return ResponseEntity.status(404)
-                    .body(APIResponse
-                            .erro(404, erro.getMessage())
-                    );
-        }
+    @PutMapping
+    public ResponseEntity<APIResponse<FilmeDTO>> atualizarFilme(
+            @RequestBody @Valid AtualizarDadosFilmeDTO dados) {
+        return ResponseEntity
+			.ok(filmeService
+				.atualizarFilme(dados));
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
-    public ResponseEntity<APIResponse<?>> excluir(@PathVariable UUID id) {
-        if (!filmes.existsById(id)) { // Verifica se o ID existe no banco
-            return ResponseEntity
-                    .status(404) // Retorna 404 caso não encontre
-                    .body(APIResponse
-                            .erro(404, "O filme não foi encontrado ou não existe"));
+    public ResponseEntity<APIResponse<?>> excluirFilme(@PathVariable UUID id) {
+        var resposta = filmeService.excluirFilme(id);
+        if (resposta.getStatus() == 404) {
+            return ResponseEntity.status(404).body(resposta);
         }
-
-        filmes.deleteById(id); // Deleta o filme
-
-        return ResponseEntity
-                .status(204) // Retorna 204 se a exclusão foi bem-sucedida
-                .body(APIResponse
-                        .semConteudo("O filme e seus dados foram removido com sucesso")
-                );
+        return ResponseEntity.status(204).body(resposta);
     }
 }

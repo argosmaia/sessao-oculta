@@ -23,6 +23,7 @@ public class FilmeService {
         this.filmes = filmes;
     }
 
+    //===== Cadastro de filmes chamando pro front-end /GET localhost:8080/filme
     @Transactional
     public APIResponse<FilmeDTO> cadastrarFilme(CriarFilmeDTO dados) {
         var filme = new Filme(dados);

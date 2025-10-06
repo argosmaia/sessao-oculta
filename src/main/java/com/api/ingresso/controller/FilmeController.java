@@ -41,16 +41,17 @@ public class FilmeController {
 	    UriComponentsBuilder uriBuilder
 	) {
 
-	    var resposta = filmeService.cadastrarFilme(dados);
+		var resposta = filmeService.cadastrarFilme(dados);
 
-	    var uri = uriBuilder.path("/usuario/{id}")
-	            .buildAndExpand(resposta.getDados().id())
-	            .toUri();
+		var uri = uriBuilder.path("/usuario/{id}")
+				.buildAndExpand(resposta.getDados().id())
+				.toUri();
 
-	    return ResponseEntity
-					.created(uri)
-					.body(resposta);
+		return ResponseEntity
+				.created(uri)
+				.body(resposta);
 	}
+
     @GetMapping
     public ResponseEntity<APIResponse<Page<ListarFilmesDTO>>> listarFilmes(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
         return ResponseEntity
@@ -66,7 +67,7 @@ public class FilmeController {
 				.atualizarFilme(dados));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/usuario/{id}")
     public ResponseEntity<APIResponse<?>> excluirFilme(@PathVariable UUID id) {
         var resposta = filmeService.excluirFilme(id);
         if (resposta.getStatus() == 404) {

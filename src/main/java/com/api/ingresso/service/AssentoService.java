@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class AssentoService {
     private final AssentoRepository assentoRepository;
@@ -25,15 +27,17 @@ public class AssentoService {
     }
 
     @Transactional
-    public APIResponse<AssentoDTO> cadastrarAssento(CriarAssentoDTO  dados) throws Exception {
+    public APIResponse<AssentoDTO> cadastrarAssento(CriarAssentoDTO  dados) {
         var assento = new Assento();
+
         assentoRepository.save(assento);
+
         return APIResponse
                 .sucesso("Assento cadastrado com sucesso",
                         new AssentoDTO(assento));
     }
 
-    public APIResponse<Page<ListarAssentoDTO>> listarAssrentos(Pageable paginacao) {
+    public APIResponse<Page<ListarAssentoDTO>> listarAssentos(Pageable paginacao) {
         var paginas = assentoRepository.findAll(paginacao)
                 .map(ListarAssentoDTO::new);
         return APIResponse.sucesso("Lista de assentos:\n", paginas);
@@ -45,5 +49,14 @@ public class AssentoService {
                 .orElseThrow(() -> new EntityNotFoundException("Assento não encontrado no banco de dados"));
         assento.atualizarDados(dados);
         return APIResponse.sucesso("Assento atualizado com sucesso", new AssentoDTO(assento));
+    }
+
+    @Transactional
+    public APIResponse<?> excluirAssento(UUID id) {
+        if (!assentoRepository.existsById(id)) {
+            return APIResponse.erro(404, "O assento não foi encontrado");
+        }
+        assentoRepository.deleteById(id);
+        return APIResponse.semConteudo("O assento foi removido com sucesso");
     }
 }

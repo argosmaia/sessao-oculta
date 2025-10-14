@@ -42,4 +42,8 @@ public class Produto {
 	@Enumerated(EnumType.STRING)
 	private Bebida bebida;
 	private BigDecimal preco;
+
+	public Produto(ProdutoDTO dados) {
+
+	}
 }

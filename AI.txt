@@ -1,0 +1,55 @@
+
+
+Análise do Sistema: Sessão Oculta
+Com base na inspeção detalhada do código fonte, aqui está a avaliação do sistema quanto à Complexidade, Robustez, Segurança e Eficiência.
+
+Veredito Resumido
+O sistema é ROBUSTO e SEGURO, mas LENTO e com escopo LIMITADO (Ineficaz para clientes finais).
+
+Ele segue boas práticas arquiteturais que garantem manutenção fácil (robustez), mas falha em otimizações de banco de dados críticas (performance) e restringe a autenticação apenas a administradores.
+
+1. Robustez (Alta)
+O sistema é bem estruturado e fácil de manter.
+
+Arquitetura Limpa: Separação clara entre Controllers, Services, Repositories e DTOs. Isso facilita testes e manutenção.
+Tipagem Forte: Uso extensivo de DTOs para entrada e saída (CriarSessaoDTO, ListarSessaoDTO) previne vazamento de dados internos das entidades.
+Consistência de Dados: Uso de Flyway para migrações e validações fortes (@NotNull, Validators dedicados como CalculoPedidoValidator) garantem que o dado chega limpo ao banco.
+Tratamento de Exceções: Centralizado e claro (EntityNotFoundException, etc.).
+2. Segurança (Média/Alta)
+A segurança é sólida para o escopo implementado.
+
+Autenticação Stateless: Uso correto de JWT com Spring Security. Não mantém sessão no servidor, o que é ótimo para escalabilidade.
+Criptografia: Senhas salvas com BCrypt (força 12), o padrão de mercado.
+Bloqueio Padrão: anyRequest().authenticated() garante que nada fica aberto por acidente.
+Limitação (Ineficácia): O 
+AutenticacaoService
+ e o 
+SecurityFilter
+ consultam apenas o repositório de Admins (AdminUserRepository). Usuários comuns (Usuario) não parecem ter fluxo de login ou acesso à API. Se o objetivo é vender ingressos para clientes, o sistema é ineficaz neste ponto.
+3. Desempenho (Risco de Lentidão)
+A performance é o ponto fraco devido ao problema de N+1 Consultas.
+
+Sessão (SessaoService): Ao listar sessões (findAll), o JPA busca a lista de sessões (1 query). Mas, como 
+Sessao
+ tem relacionamentos @ManyToOne com Filme e Sala (que são EAGER por padrão ou acessados durante o mapeamento para DTO), o sistema fará queries adicionais para buscar o filme e a sala de cada sessão.
+Cenário: Listar 20 sessões pode gerar 1 + 20 (filmes) + 20 (salas) = 41 queries no banco.
+Pedidos (PedidoService): Mesmo problema com Itens e Ingressos. Listar pedidos pode causar uma avalanche de pequenos selects no banco de dados.
+Solução Necessária: Uso de JOIN FETCH ou @EntityGraph nos repositórios para buscar tudo em uma única query.
+4. Eficiência (Média/Baixa)
+Verificação de Token: O 
+SecurityFilter
+ faz uma busca no banco de dados (adminUser.findByLogin) a cada requisição para validar o usuário. Isso adiciona latência em todas as chamadas. Idealmente, isso deveria ser cacheado (Redis) ou confiar apenas na assinatura e claims do JWT (se stateless puro).
+Conclusão
+O sistema "peca pelo excesso" de estrutura (o que é bom para organização), mas "peca pela falta" de otimização de banco de dados.
+
+É rápido? Não escalará bem com muitos dados devido ao problema N+1.
+É robusto? Sim, muito bem organizado e tipado.
+É seguro? Sim, usa padrões modernos.
+É eficaz? Parcialmente. Funciona bem como backend administrativo, mas carece de funcionalidades para usuário final (login de cliente).
+Recomendação: Focar em otimização de queries (Performance) e implementar fluxo de clientes (Eficácia).
+
+Analisei o sistema completo. Criei um relatório detalhado (system_analysis.md) com a avaliação.
+
+Resumo: O sistema é Robusto e Seguro, mas tende a ser Lento (devido a problemas de N+1 queries) e Ineficaz para o público final (pois a autenticação parece restrita a Admins).
+
+Gostaria que eu tomasse alguma ação para corrigir os problemas de performance ou segurança identificados?

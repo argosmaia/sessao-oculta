@@ -1,12 +1,9 @@
 package com.api.ingresso.controller;
 
 import com.api.ingresso.dto.AssentoDTO;
-import com.api.ingresso.dto.UsuarioDTO;
 import com.api.ingresso.dto.atualizar.AtualizarAssentoDTO;
-import com.api.ingresso.dto.atualizar.AtualizarDadosUsuarioDTO;
 import com.api.ingresso.dto.criar.CriarAssentoDTO;
 import com.api.ingresso.dto.listar.ListarAssentoDTO;
-import com.api.ingresso.dto.listar.ListarUsuariosDTO;
 import com.api.ingresso.response.APIResponse;
 import com.api.ingresso.service.AssentoService;
 import jakarta.validation.Valid;

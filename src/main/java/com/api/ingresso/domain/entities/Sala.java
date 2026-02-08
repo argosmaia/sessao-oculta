@@ -6,6 +6,8 @@ package com.api.ingresso.domain.entities;
 import java.util.UUID;
 
 import com.api.ingresso.domain.embeddable.Endereco;
+import com.api.ingresso.dto.atualizar.AtualizarSalaDTO;
+import com.api.ingresso.dto.criar.CriarSalaDTO;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -35,4 +37,16 @@ public class Sala {
     private String nome;
     @Embedded
     private Endereco endereco;
+
+    public Sala(CriarSalaDTO dados) {
+        this.nome = dados.nome();
+        this.endereco = new Endereco(dados.endereco());
+    }
+
+    public void atualizarDados(AtualizarSalaDTO dados) {
+        this.nome = dados.nome() != null ? dados.nome() : this.nome;
+        if (dados.endereco() != null) {
+            this.endereco.atualizarEndereco(dados.endereco());
+        }
+    }
 }

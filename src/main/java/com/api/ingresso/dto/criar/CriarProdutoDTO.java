@@ -1,9 +1,10 @@
 package com.api.ingresso.dto.criar;
 
+import java.math.BigDecimal;
+
 import com.api.ingresso.domain.embeddable.Bebida;
 import com.api.ingresso.domain.embeddable.Lanche;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 /**
  * 	private UUID id;
@@ -17,8 +18,10 @@ import jakarta.validation.constraints.NotNull;
  */
 public record CriarProdutoDTO(
         @NotBlank String nome,
-        String descricao,
-        Lanche lanche,
-        Bebida bebida
+        @NotBlank String descricao,
+        @NotBlank Lanche lanche,
+        @NotBlank Bebida bebida,
+        @NotBlank BigDecimal preco
 ) {
+        
 }

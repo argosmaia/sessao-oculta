@@ -2,12 +2,9 @@ package com.api.ingresso.service;
 
 import com.api.ingresso.domain.entities.Assento;
 import com.api.ingresso.dto.AssentoDTO;
-import com.api.ingresso.dto.FilmeDTO;
 import com.api.ingresso.dto.atualizar.AtualizarAssentoDTO;
-import com.api.ingresso.dto.atualizar.AtualizarDadosFilmeDTO;
 import com.api.ingresso.dto.criar.CriarAssentoDTO;
 import com.api.ingresso.dto.listar.ListarAssentoDTO;
-import com.api.ingresso.dto.listar.ListarFilmesDTO;
 import com.api.ingresso.repository.AssentoRepository;
 import com.api.ingresso.response.APIResponse;
 import jakarta.persistence.EntityNotFoundException;
